@@ -1,48 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+const express = require("express")
+const mongoose = require("mongoose")
+const app = express()
+const database = require("./database")
+const bodyParser = require("body-parser")
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-      <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+// use bodyparser to get data from body in json format
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+require("./model")
+app.use(require("./routes"))
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+app.get("/",(req,res)=>{
+    res.json({name:"vishal"})
+})
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
-</html>
+app.listen(3000,()=>{
+    console.log("running -> 3000")
+})
+
+
+
+require ("dotenv").config()
+const mongoose = require("mongoose")
+const assert = require("assert")
+
+
+mongoose.connect("mongodb://127.0.0.1:27017/practice1",
+{
+    useUnifiedTopology:true,
+useCreateIndex:true,
+useFindAndModify:false,
+useNewUrlParser:true,
+useCreateIndex:true
+},function(error,link){
+assert.equal(error,null,"fail db connect")
+console.log(link)
+console.log("connected")
+})
+
+
+
+
+
+const mongoose = require("mongoose")
+
+const userScheme = new mongoose.Schema({
+    name:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true
+    },
+    password:{
+        type:String,
+        required:true
+    }
+})
+
+mongoose.model("User",userScheme)
+
+
+
+
+const express  = require("express")
+const mongoose = require("mongoose")
+const router = express.Router()
+const User = mongoose.model("User")
+
+router.get("/create",(req,res)=>{
+console.log({ok:"ok"})
+})
+
+module.exports=router;
